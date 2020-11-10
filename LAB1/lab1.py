@@ -50,7 +50,7 @@ print('@Task 1.1: second ideal point: ', pt_ideal_1)
 
 l_inf = np.cross(pt_ideal_0,pt_ideal_1)
 l_inf /= l_inf[-1]
-print('@Task1.1: line at infinity: ', l_inf)
+print('@Task 1.1: line at infinity: ', l_inf)
 
 print('Task 1.2: Construct the projectivity that affinely rectify image')
 H = np.array([[1,0,0],[0,1,0],[l_inf[0],l_inf[1],l_inf[2]]])
@@ -60,9 +60,10 @@ H_E = euclidean_trans(np.deg2rad(0), 50, 250)
 
 affine_img = cv2.warpPerspective(img, H_E @ H, (img.shape[1], img.shape[0]))
 
-affine_pts = np.array([np.cross(H,pts_homo[0]),np.cross(H,pts_homo[1]),np.cross(H,pts_homo[2]),np.cross(H,pts_homo[3])])
+affine_pts = np.transpose((H_E @ H).dot(np.transpose(pts_homo)))
 for i in range(affine_pts.shape[0]):
     affine_pts[i] /= affine_pts[i, -1]
+    print('\t',affine_pts[i])
 
 plt.plot(*zip(*affine_pts[:, :-1]), marker='o', color='r', ls='')
 plt.imshow(affine_img)
@@ -72,14 +73,14 @@ print('-------- End of Task 1 --------\n')
 '''
 #Task 2: Metric rectification
 '''
-'''
+
 print('\n-------- Task 2: Metric rectification --------')
 print('Task 2.1: transform 4 chosen points from projective image to affine image')
-aff_hor_0 = # image of first horizontal line on affine plane
-aff_hor_1 = # image of 2nd horizontal line on affine plane
+aff_hor_0 = np.cross(affine_pts[0],affine_pts[1])
+aff_hor_1 = np.cross(affine_pts[2],affine_pts[3])
 
-aff_ver_0 =  # image of first vertical line on affine plane
-aff_ver_1 = # image of 2nd vertical line on affine plane
+aff_ver_0 = np.cross(affine_pts[0],affine_pts[3])
+aff_ver_1 = np.cross(affine_pts[1],affine_pts[2])
 
 aff_hor_0 /= aff_hor_0[-1]
 aff_hor_1 /= aff_hor_1[-1]
@@ -88,7 +89,7 @@ aff_ver_1 /= aff_ver_1[-1]
 print('@Task 2.1: first chosen point coordinate')
 print('\t\t on projective image: ', pts_homo[0])
 print('\t\t on affine image: ', affine_pts[0])
-
+'''
 print('Task 2.2: construct constraint matrix C to find vector s')
 C0 = np.array([])
 
