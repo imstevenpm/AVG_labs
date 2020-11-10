@@ -100,7 +100,7 @@ print('@Task 2.2: constraint matrix C:\n', C)
 
 print('Task 2.3: Find s by looking for the kernel of C (hint: SVD)')
 [usvd, ssvd, svdvh]= np.linalg.svd(C)
-s = svdvh[:, -1]
+s = np.transpose(svdvh)[:, -1]
 print('@Task 2.3: s = ', s)
 print('@Task 2.3: C @ s = \n', C @ s.reshape(-1, 1))
 mat_S = np.array([
