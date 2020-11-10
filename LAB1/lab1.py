@@ -89,17 +89,18 @@ aff_ver_1 /= aff_ver_1[-1]
 print('@Task 2.1: first chosen point coordinate')
 print('\t\t on projective image: ', pts_homo[0])
 print('\t\t on affine image: ', affine_pts[0])
-'''
-print('Task 2.2: construct constraint matrix C to find vector s')
-C0 = np.array([])
 
-C1 = np.array([])
+print('Task 2.2: construct constraint matrix C to find vector s')
+C0 = np.array([aff_hor_0[0]*aff_ver_0[0],aff_hor_0[0]*aff_ver_0[1] + aff_hor_0[1]*aff_ver_0[0],aff_hor_0[1]*aff_ver_0[1]])
+
+C1 = np.array([aff_hor_1[0]*aff_ver_1[0],aff_hor_1[0]*aff_ver_1[1] + aff_hor_1[1]*aff_ver_1[0],aff_hor_1[1]*aff_ver_1[1]])
 
 C = np.vstack([C0, C1])
 print('@Task 2.2: constraint matrix C:\n', C)
 
 print('Task 2.3: Find s by looking for the kernel of C (hint: SVD)')
-s =
+[usvd, ssvd, svdvh]= np.linalg.svd(C)
+s = svdvh[:, -1]
 print('@Task 2.3: s = ', s)
 print('@Task 2.3: C @ s = \n', C @ s.reshape(-1, 1))
 mat_S = np.array([
@@ -109,12 +110,17 @@ mat_S = np.array([
 print('@Task 2.3: matrix S:\n', mat_S)
 
 print('Task 2.4: Find the projectivity that do metric rectificaiton')
-H =
+E, Q = np.linalg.eig(mat_S)
+K = Q.dot(np.sqrt(np.diag(E)))
+K_inv = np.linalg.inv(K)
+H = np.array([[K_inv[0][0],K_inv[0][1],0],[K_inv[1][0],K_inv[1][1],0],[0,0,1]])
+
 aff_dual_conic = np.array([
     [s[0], s[1], 0],
     [s[1], s[2], 0],
     [0, 0, 0]
 ])
+
 print('@Task 2.3: image of dual conic on metric rectified image: ', H @ aff_dual_conic @ H.T)
 
 H_E = euclidean_trans(np.deg2rad(0), 30, 80)
@@ -128,5 +134,3 @@ for i in range(eucl_pts.shape[0]):
 plt.plot(*zip(*eucl_pts[:, :-1]), marker='o', color='r', ls='')
 plt.imshow(eucl_img)
 plt.show()
-
-'''
