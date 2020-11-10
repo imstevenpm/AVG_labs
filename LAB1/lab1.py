@@ -1,11 +1,11 @@
-#!/usr/bin/env python3
-
-import sys
-import cv2 as cv
 import numpy as np
-import matplotlib as matp
+import cv2
+import matplotlib
+from matplotlib import pyplot as plt
 
-print("Python3 version:",sys.version,"\n")
-print("OpenCV version:",cv.__version__,"\n")
-print("Numpy version:",np.__version__,"\n")
-print("Matplotlib version:",matp.__version__,"\n")
+filename = 'tilef.jpg'
+img = cv2.imread(filename)
+
+plt.imshow(img ,cmap = 'gray')
+
+plt.show()
