@@ -86,6 +86,9 @@ aff_hor_0 /= aff_hor_0[-1]
 aff_hor_1 /= aff_hor_1[-1]
 aff_ver_0 /= aff_ver_0[-1]
 aff_ver_1 /= aff_ver_1[-1]
+# Make new orthogonal constraint between the diagonals
+aff_diag_0 = np.cross(affine_pts[0],affine_pts[2])
+aff_diag_1 = np.cross(affine_pts[1],affine_pts[3])
 print('@Task 2.1: first chosen point coordinate')
 print('\t\t on projective image: ', pts_homo[0])
 print('\t\t on affine image: ', affine_pts[0])
@@ -93,7 +96,8 @@ print('\t\t on affine image: ', affine_pts[0])
 print('Task 2.2: construct constraint matrix C to find vector s')
 C0 = np.array([aff_hor_0[0]*aff_ver_0[0],aff_hor_0[0]*aff_ver_0[1] + aff_hor_0[1]*aff_ver_0[0],aff_hor_0[1]*aff_ver_0[1]])
 
-C1 = np.array([aff_hor_1[0]*aff_ver_1[0],aff_hor_1[0]*aff_ver_1[1] + aff_hor_1[1]*aff_ver_1[0],aff_hor_1[1]*aff_ver_1[1]])
+#C1 = np.array([aff_hor_1[0]*aff_ver_1[0],aff_hor_1[0]*aff_ver_1[1] + aff_hor_1[1]*aff_ver_1[0],aff_hor_1[1]*aff_ver_1[1]])
+C1 = np.array([aff_diag_0[0]*aff_diag_1[0],aff_diag_0[0]*aff_diag_1[1] + aff_diag_0[1]*aff_diag_1[0],aff_diag_0[1]*aff_diag_1[1]])
 
 C = np.vstack([C0, C1])
 print('@Task 2.2: constraint matrix C:\n', C)
@@ -123,7 +127,7 @@ aff_dual_conic = np.array([
 
 print('@Task 2.3: image of dual conic on metric rectified image: ', H @ aff_dual_conic @ H.T)
 
-H_E = euclidean_trans(np.deg2rad(0), 30, 80)
+H_E = euclidean_trans(np.deg2rad(0), -250, -900) @ euclidean_trans(np.deg2rad(-20),0,0)
 H_fin = H_E @ H
 eucl_img = cv2.warpPerspective(affine_img, H_fin, (img.shape[1], img.shape[0]))
 
