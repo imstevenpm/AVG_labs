@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import matplotlib.pyplot as plt 
 
 
 def normalize_transformation(points: np.ndarray) -> np.ndarray:
@@ -95,3 +96,48 @@ F = T_train.T @ F @ T_query
 F_gt = np.loadtxt('chapel.00.01.F')
 print(F - F_gt)
 
+
+## 1.1.1 Practical
+
+# Load F
+F= np.loadtxt('chapel.00.01.F')
+
+# Get the real epipole from F
+u,s,vh= np.linalg.svd(F.T)
+e= vh.T[:,-1]
+e /= e[-1]
+
+# Choose two correspondances points
+plt.imshow(img1, cmap='gray')
+x= plt.ginput(2)
+x= np.asarray(x)
+
+# Homogenize the selected points
+one= np.ones((1,2))
+x= np.concatenate((x,one.T),axis=1)
+
+# Compute the epipolar lines by l = F x
+l= F @ x.T
+
+# Compute the epipole from the epipolar lines computed
+ec= np.cross(l[:,0],l[:,1])
+ec /= ec[-1]
+
+print('REAL EPIPOLE: ', e, '\n')
+print('COMPUTED EPIPOLE: ', ec, '\n')
+
+# Visualize the epipolar lines computed
+x2 = np.array([0, 500])
+
+a2, b2, c2 = l[:,0].ravel()
+y2 = -(x2*a2 + c2) / b2
+a3, b3, c3 = l[:,1].ravel()
+y3 = -(x2*a3 + c3) / b3
+
+img2=cv2.imread('./img/chapel01.png')
+image=cv2.line(img2,(x2[0],int(np.around(y2.T[0]))),(x2[-1],int(np.around(y2.T[-1]))),(0,255,0),(1))
+image=cv2.line(img2,(x2[0],int(np.around(y3.T[0]))),(x2[-1],int(np.around(y3.T[-1]))),(0,255,0),(1))
+cv2.imshow('Epipolar lines',image)
+
+# PRESS A KEY TO FINISH INSTEAD OF CLOSING THE WINDOW
+cv2.waitKey(0)
