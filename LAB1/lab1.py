@@ -138,3 +138,4 @@ for i in range(eucl_pts.shape[0]):
 plt.plot(*zip(*eucl_pts[:, :-1]), marker='o', color='r', ls='')
 plt.imshow(eucl_img)
 plt.show()
+

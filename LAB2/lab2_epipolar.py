@@ -94,8 +94,14 @@ assert np.linalg.matrix_rank(F) == 2, 'Fundamental matrix must have rank 2'
 # hint: last line of Algorithme 1 in the lab subject
 F = T_train.T @ F @ T_query
 F_gt = np.loadtxt('chapel.00.01.F')
-print(F - F_gt)
 
+Fransac, mask= cv2.findFundamentalMat(query_kpts, train_kpts, cv2.FM_RANSAC)
+
+print('ERROR OF F COMPUTED BY 8-POINT ALGORITHM:')
+print(F - F_gt)
+print('*****')
+print('ERROR OF F COMPUTED BY CV RANSAC:')
+print(Fransac - F_gt)
 
 ## 1.1.1 Practical
 
@@ -123,8 +129,9 @@ l= F @ x.T
 ec= np.cross(l[:,0],l[:,1])
 ec /= ec[-1]
 
-print('REAL EPIPOLE: ', e, '\n')
-print('COMPUTED EPIPOLE: ', ec, '\n')
+print('****')
+print('REAL EPIPOLE: ', e)
+print('COMPUTED EPIPOLE: ', ec)
 
 # Visualize the epipolar lines computed
 x2 = np.array([0, 500])
